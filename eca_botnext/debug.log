@@ -1,0 +1,8 @@
+[logging.py:127 INFO] Step 3: torchinductor compiling BACKWARDS graph 0
+[scheduler.py:735 DEBUG] removed dead node: buf148
+[scheduler.py:735 DEBUG] removed dead node: buf176
+[scheduler.py:735 DEBUG] removed dead node: buf211
+[scheduler.py:735 DEBUG] removed dead node: buf241
+[scheduler.py:735 DEBUG] removed dead node: buf280
+[logging.py:127 INFO] Step 3: torchinductor done compiling BACKWARDS graph 0
+[debug.py:339 WARNING] eca_botnext26ts_256__0_backward_5 debug trace: /scratch/ngimel/work/pytorch/torch_compile_debug/run_2023_02_08_20_45_17_015637/aot_torchinductor/eca_botnext26ts_256__0_backward_5.3
