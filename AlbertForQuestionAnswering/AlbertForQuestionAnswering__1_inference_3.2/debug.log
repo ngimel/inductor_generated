@@ -1,0 +1,4 @@
+[logging.py:127 INFO] Step 3: torchinductor compiling FORWARDS graph 1
+[compile_fx.py:178 WARNING] skipping cudagraphs due to input mutation
+[logging.py:127 INFO] Step 3: torchinductor done compiling FORWARDS graph 1
+[debug.py:339 WARNING] AlbertForQuestionAnswering__1_inference_3 debug trace: /scratch/ngimel/work/pytorch/torch_compile_debug/run_2023_02_09_23_22_49_720572/aot_torchinductor/AlbertForQuestionAnswering__1_inference_3.2
