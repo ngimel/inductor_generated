@@ -1,0 +1,106 @@
+buf0: SchedulerNode(ComputedBuffer)
+buf0.writes = [MemoryDep(name='buf0', index=c0, size=(8000,))]
+buf0.unmet_dependencies = []
+buf0.met_dependencies = []
+buf0.group.device = cuda:0
+buf0.group.iteration = (8000, 1)
+buf0.sizes = ([8000], [])
+class buf0_loop_body:
+    var_ranges = {z0: 8000}
+    index0 = z0
+    def body(self, ops):
+        constant = ops.constant(0, torch.float32)
+        get_index = self.get_index('index0')
+        store = ops.store('buf0', get_index, constant, None)
+        return store
+
+
+buf1: SchedulerNode(ComputedBuffer)
+buf1.writes = [MemoryDep(name='buf1', index=(tmp0) + 1000*c0, size=(8,))]
+buf1.unmet_dependencies = [StarDep(name='buf0')]
+buf1.met_dependencies = [MemoryDep(name='unsqueeze', index=c0, size=(8,))]
+buf1.group.device = cuda:0
+buf1.group.iteration = (8, 1)
+buf1.sizes = ([8], [])
+buf1.mutations = ['buf0']
+class buf1_loop_body:
+    var_ranges = {z0: 8}
+    index0 = z0
+    index1 = indirect0 + 1000*z0
+    def body(self, ops):
+        get_index = self.get_index('index0')
+        load = ops.load('unsqueeze', get_index)
+        set_indirect0 = self.set_indirect0(load)
+        constant = ops.constant(-1.0, torch.float32)
+        get_index_1 = self.get_index('index1')
+        store = ops.store('buf1', get_index_1, constant, None)
+        return store
+
+
+buf2: SchedulerNode(ComputedBuffer)
+buf2.writes = 
+    [   MemoryDep(name='buf2', index=c0, size=(8, 1000)),
+        MemoryDep(name='buf2', index=c0, size=(8,))]
+buf2.unmet_dependencies = [MemoryDep(name='buf1', index=c0, size=(8000,))]
+buf2.met_dependencies = [MemoryDep(name='tangents_1', index=0, size=(8000,))]
+buf2.group.device = cuda:0
+buf2.group.iteration = (8, 1000)
+buf2.sizes = ([8], [1000])
+class buf2_loop_body:
+    var_ranges = {z0: 8, z1: 1000}
+    index0 = 1000*z0 + z1
+    index1 = 0
+    index2 = z0
+    def body(self, ops):
+        get_index = self.get_index('index0')
+        load = ops.load('buf0', get_index)
+        get_index_1 = self.get_index('index1')
+        load_1 = ops.load('tangents_1', get_index_1)
+        constant = ops.constant(10.0, torch.float32)
+        div = ops.div(load_1, constant)
+        constant_1 = ops.constant(8.0, torch.float32)
+        div_1 = ops.div(div, constant_1)
+        mul = ops.mul(load, div_1)
+        get_index_2 = self.get_index('index2')
+        reduction = ops.reduction('buf2', torch.float32, torch.float32, 'sum', get_index_2, mul)
+        return reduction
+
+
+buf3: SchedulerNode(ComputedBuffer)
+buf3.writes = [MemoryDep(name='buf3', index=c0, size=(8000,))]
+buf3.unmet_dependencies = 
+    [   MemoryDep(name='buf1', index=c0, size=(8000,)),
+        MemoryDep(name='buf2', index=c0, size=(8, 1000))]
+buf3.met_dependencies = 
+    [   MemoryDep(name='sub_1', index=c0, size=(8000,)),
+        MemoryDep(name='tangents_1', index=0, size=(8000,))]
+buf3.group.device = cuda:0
+buf3.group.iteration = (8000, 1)
+buf3.sizes = ([8, 1000], [])
+class buf3_loop_body:
+    var_ranges = {z0: 8, z1: 1000}
+    index0 = 1000*z0 + z1
+    index1 = 0
+    index2 = z0
+    def body(self, ops):
+        get_index = self.get_index('index0')
+        load = ops.load('buf0', get_index)
+        get_index_1 = self.get_index('index1')
+        load_1 = ops.load('tangents_1', get_index_1)
+        constant = ops.constant(10.0, torch.float32)
+        div = ops.div(load_1, constant)
+        constant_1 = ops.constant(8.0, torch.float32)
+        div_1 = ops.div(div, constant_1)
+        mul = ops.mul(load, div_1)
+        get_index_2 = self.get_index('index0')
+        load_2 = ops.load('sub_1', get_index_2)
+        exp = ops.exp(load_2)
+        get_index_3 = self.get_index('index2')
+        load_3 = ops.load('buf2', get_index_3)
+        mul_1 = ops.mul(exp, load_3)
+        sub = ops.sub(mul, mul_1)
+        get_index_4 = self.get_index('index0')
+        store = ops.store('buf3', get_index_4, sub, None)
+        return store
+
+

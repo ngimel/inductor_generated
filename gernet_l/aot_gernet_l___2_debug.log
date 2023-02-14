@@ -1,0 +1,64 @@
+[aot_autograd.py:1664 DEBUG] ====== Joint graph 1 ======
+[aot_autograd.py:1665 DEBUG] class functionalized_joint(torch.nn.Module):
+    def forward(self, primals, tangents):
+        primals_1: f32[8, 1000], primals_2: i64[8], tangents_1: f32[], = fx_pytree.tree_flatten_spec([primals, tangents], self._in_spec)
+        # File: /scratch/ngimel/work/pytorch/benchmarks/dynamo/timm_models.py:319, code: return self.loss(pred, self.target) / 10.0
+        amax: f32[8, 1] = torch.ops.aten.amax.default(primals_1, [1], True)
+        sub: f32[8, 1000] = torch.ops.aten.sub.Tensor(primals_1, amax);  primals_1 = amax = None
+        exp: f32[8, 1000] = torch.ops.aten.exp.default(sub)
+        sum_1: f32[8, 1] = torch.ops.aten.sum.dim_IntList(exp, [1], True);  exp = None
+        log: f32[8, 1] = torch.ops.aten.log.default(sum_1);  sum_1 = None
+        sub_1: f32[8, 1000] = torch.ops.aten.sub.Tensor(sub, log);  sub = log = None
+        unsqueeze: i64[8, 1] = torch.ops.aten.unsqueeze.default(primals_2, 1)
+        gather: f32[8, 1] = torch.ops.aten.gather.default(sub_1, 1, unsqueeze);  unsqueeze = None
+        squeeze: f32[8] = torch.ops.aten.squeeze.dim(gather, 1);  gather = None
+        neg: f32[8] = torch.ops.aten.neg.default(squeeze);  squeeze = None
+        full: f32[] = torch.ops.aten.full.default([], 8.0, dtype = torch.float32, layout = torch.strided, device = device(type='cuda', index=0), pin_memory = False)
+        mean: f32[] = torch.ops.aten.mean.default(neg);  neg = None
+        div: f32[] = torch.ops.aten.div.Tensor(mean, 10.0);  mean = None
+        div_1: f32[] = torch.ops.aten.div.Tensor(tangents_1, 10.0);  tangents_1 = None
+        div_2: f32[] = torch.ops.aten.div.Tensor(div_1, full);  div_1 = full = None
+        unsqueeze_1: i64[8, 1] = torch.ops.aten.unsqueeze.default(primals_2, 1);  primals_2 = None
+        full_like: f32[8, 1000] = torch.ops.aten.full_like.default(sub_1, 0, dtype = torch.float32, layout = torch.strided, device = device(type='cuda', index=0), pin_memory = False, memory_format = torch.preserve_format)
+        scatter: f32[8, 1000] = torch.ops.aten.scatter.value(full_like, 1, unsqueeze_1, -1.0);  full_like = unsqueeze_1 = None
+        mul: f32[8, 1000] = torch.ops.aten.mul.Tensor(scatter, div_2);  scatter = div_2 = None
+        exp_1: f32[8, 1000] = torch.ops.aten.exp.default(sub_1);  sub_1 = None
+        sum_2: f32[8, 1] = torch.ops.aten.sum.dim_IntList(mul, [1], True)
+        mul_1: f32[8, 1000] = torch.ops.aten.mul.Tensor(exp_1, sum_2);  exp_1 = sum_2 = None
+        sub_2: f32[8, 1000] = torch.ops.aten.sub.Tensor(mul, mul_1);  mul = mul_1 = None
+        return pytree.tree_unflatten([div, sub_2, None], self._out_spec)
+        
+[aot_autograd.py:1683 DEBUG] ====== Forward graph 1 ======
+[aot_autograd.py:1684 DEBUG] class GraphModule(torch.nn.Module):
+    def forward(self, primals_1: f32[8, 1000], primals_2: i64[8]):
+        # File: /scratch/ngimel/work/pytorch/benchmarks/dynamo/timm_models.py:319, code: return self.loss(pred, self.target) / 10.0
+        amax: f32[8, 1] = torch.ops.aten.amax.default(primals_1, [1], True)
+        sub: f32[8, 1000] = torch.ops.aten.sub.Tensor(primals_1, amax);  primals_1 = amax = None
+        exp: f32[8, 1000] = torch.ops.aten.exp.default(sub)
+        sum_1: f32[8, 1] = torch.ops.aten.sum.dim_IntList(exp, [1], True);  exp = None
+        log: f32[8, 1] = torch.ops.aten.log.default(sum_1);  sum_1 = None
+        sub_1: f32[8, 1000] = torch.ops.aten.sub.Tensor(sub, log);  sub = log = None
+        unsqueeze: i64[8, 1] = torch.ops.aten.unsqueeze.default(primals_2, 1);  primals_2 = None
+        gather: f32[8, 1] = torch.ops.aten.gather.default(sub_1, 1, unsqueeze)
+        squeeze: f32[8] = torch.ops.aten.squeeze.dim(gather, 1);  gather = None
+        neg: f32[8] = torch.ops.aten.neg.default(squeeze);  squeeze = None
+        mean: f32[] = torch.ops.aten.mean.default(neg);  neg = None
+        div: f32[] = torch.ops.aten.div.Tensor(mean, 10.0);  mean = None
+        return [div, sub_1, unsqueeze]
+        
+[aot_autograd.py:1685 DEBUG] ====== Backward graph 1 ======
+[aot_autograd.py:1686 DEBUG] class GraphModule(torch.nn.Module):
+    def forward(self, sub_1: f32[8, 1000], unsqueeze: i64[8, 1], tangents_1: f32[]):
+        # File: /scratch/ngimel/work/pytorch/benchmarks/dynamo/timm_models.py:319, code: return self.loss(pred, self.target) / 10.0
+        full: f32[] = torch.ops.aten.full.default([], 8.0, dtype = torch.float32, layout = torch.strided, device = device(type='cuda', index=0), pin_memory = False)
+        div_1: f32[] = torch.ops.aten.div.Tensor(tangents_1, 10.0);  tangents_1 = None
+        div_2: f32[] = torch.ops.aten.div.Tensor(div_1, full);  div_1 = full = None
+        full_like: f32[8, 1000] = torch.ops.aten.full_like.default(sub_1, 0, dtype = torch.float32, layout = torch.strided, device = device(type='cuda', index=0), pin_memory = False, memory_format = torch.preserve_format)
+        scatter: f32[8, 1000] = torch.ops.aten.scatter.value(full_like, 1, unsqueeze, -1.0);  full_like = unsqueeze = None
+        mul: f32[8, 1000] = torch.ops.aten.mul.Tensor(scatter, div_2);  scatter = div_2 = None
+        exp_1: f32[8, 1000] = torch.ops.aten.exp.default(sub_1);  sub_1 = None
+        sum_2: f32[8, 1] = torch.ops.aten.sum.dim_IntList(mul, [1], True)
+        mul_1: f32[8, 1000] = torch.ops.aten.mul.Tensor(exp_1, sum_2);  exp_1 = sum_2 = None
+        sub_2: f32[8, 1000] = torch.ops.aten.sub.Tensor(mul, mul_1);  mul = mul_1 = None
+        return [sub_2, None]
+        

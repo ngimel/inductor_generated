@@ -1,0 +1,5 @@
+[logging.py:127 INFO] Step 3: torchinductor compiling FORWARDS graph 1
+[scheduler.py:1089 DEBUG] remove_buffer('buf1')
+[scheduler.py:1089 DEBUG] remove_buffer('buf0')
+[logging.py:127 INFO] Step 3: torchinductor done compiling FORWARDS graph 1
+[debug.py:339 WARNING] gernet_l__1_forward_3 debug trace: /scratch/ngimel/work/pytorch/torch_compile_debug/run_2023_02_14_23_36_51_804184-pid_95269/aot_torchinductor/gernet_l__1_forward_3.1

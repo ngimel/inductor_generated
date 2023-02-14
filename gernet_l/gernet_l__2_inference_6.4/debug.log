@@ -1,0 +1,3 @@
+[logging.py:127 INFO] Step 3: torchinductor compiling FORWARDS graph 2
+[logging.py:127 INFO] Step 3: torchinductor done compiling FORWARDS graph 2
+[debug.py:339 WARNING] gernet_l__2_inference_6 debug trace: /scratch/ngimel/work/pytorch/torch_compile_debug/run_2023_02_14_23_36_51_804184-pid_95269/aot_torchinductor/gernet_l__2_inference_6.4
